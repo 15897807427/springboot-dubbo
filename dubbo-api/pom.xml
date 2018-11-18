@@ -11,6 +11,7 @@
     <artifactId>dubbo-api</artifactId>
 
     <dependencies>
+        <!-- lombok依赖 -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>

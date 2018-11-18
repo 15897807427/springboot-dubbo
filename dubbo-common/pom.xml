@@ -11,6 +11,13 @@
     <artifactId>dubbo-common</artifactId>
 
     <dependencies>
+        <!-- lombok依赖 -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.4</version>
+            <scope>provided</scope>
+        </dependency>
         <!-- commons-lang3依赖 -->
         <dependency>
             <groupId>org.apache.commons</groupId>
