@@ -11,4 +11,6 @@ public interface SysUserService {
 
     public SysUser findUserById(Integer id);
 
+    public void insertSysUser(SysUser sysUser);
+
 }
