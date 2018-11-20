@@ -1,14 +1,17 @@
 package com.xy.configration.mybatis;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 import javax.sql.DataSource;
 
 import com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceBuilder;
+import com.xy.configration.datasource.DataSourceType;
+import com.xy.configration.datasource.DynamicDataSource;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.SqlSessionTemplate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -22,15 +25,32 @@ import com.github.pagehelper.PageHelper;
 
 @Configuration
 @EnableTransactionManagement
+@Slf4j
 public class MybatisConfig {
-	
-	private static final Logger logger = LoggerFactory.getLogger(MybatisConfig.class);
 
-	@Bean(name = "dataSource",initMethod = "init", destroyMethod = "close")
-	@ConfigurationProperties(prefix = "spring.datasource.druid")
-	@Primary
-	public DataSource druidDataSource(){
+	@Bean(name = "writeDataSource",initMethod = "init", destroyMethod = "close")
+	@ConfigurationProperties(prefix = "spring.datasource.write")
+	public DataSource writeDataSource(){
 		return DruidDataSourceBuilder.create().build();
+	}
+
+	@Bean(name = "readDataSource",initMethod = "init", destroyMethod = "close")
+	@ConfigurationProperties(prefix = "spring.datasource.read")
+	public DataSource readDataSource(){
+		return DruidDataSourceBuilder.create().build();
+	}
+
+	@Bean(name = "dynamicDataSource")
+	@Primary
+	public DynamicDataSource dynamicDataSource(){
+		Map<Object, Object> targetDataSources = new HashMap<>(16);
+		targetDataSources.put(DataSourceType.Master, writeDataSource());
+		targetDataSources.put(DataSourceType.Slave, readDataSource());
+		DynamicDataSource dataSource = new DynamicDataSource();
+		//该方法是AbstractRoutingDataSource的方法
+		dataSource.setTargetDataSources(targetDataSources);
+		dataSource.setDefaultTargetDataSource(writeDataSource());
+		return dataSource;
 	}
 	
 	@Bean(name="pageHelper")
@@ -46,12 +66,11 @@ public class MybatisConfig {
 	}
 	
 	@Bean(name="sqlSessionFactory")
-	@Primary
-	public SqlSessionFactory getSqlSessionFactory(@Qualifier("dataSource") DataSource dataSource) {
+	public SqlSessionFactory getSqlSessionFactory(@Qualifier("dynamicDataSource") DynamicDataSource dynamicDataSource) {
 		SqlSessionFactoryBean sqlSessionFactoryBean=new SqlSessionFactoryBean();
 		//指定别名包
 		sqlSessionFactoryBean.setTypeAliasesPackage("com.xy.entity");
-		sqlSessionFactoryBean.setDataSource(dataSource);
+		sqlSessionFactoryBean.setDataSource(dynamicDataSource);
 		try {
 			ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
 			//指定mapper文件的位置
@@ -59,22 +78,21 @@ public class MybatisConfig {
 			return sqlSessionFactoryBean.getObject();
 		} catch (Exception e) {
 			e.printStackTrace();
-			logger.error("mybatis初始化异常！", e);
+			log.error("mybatis初始化异常！", e);
 			throw new RuntimeException("mybatis初始化异常！",e);
 		}
 		
 	}
 	
 	@Bean(name="sqlSessionTemplate")
-	@Primary
 	public SqlSessionTemplate getSqlSessionTemplate(@Qualifier("sqlSessionFactory")SqlSessionFactory sqlSessionFactory) {
 		return new SqlSessionTemplate(sqlSessionFactory);
 	}
 
 	@Bean(name="transactionManager")
 	@Primary
-	public DataSourceTransactionManager testTransactionManager(@Qualifier("dataSource") DataSource dataSource) {
-		return new DataSourceTransactionManager(dataSource);
+	public DataSourceTransactionManager testTransactionManager(@Qualifier("dynamicDataSource") DynamicDataSource dynamicDataSource) {
+		return new DataSourceTransactionManager(dynamicDataSource);
 	}
 	
 }

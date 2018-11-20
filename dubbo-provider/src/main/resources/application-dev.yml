@@ -9,11 +9,32 @@ dubbo:
     address: zookeeper://127.0.0.1:2181
   scan:
     base-packages: com.xy.service.impl
-#数据源配置
+#数据源配置（读写分离）
 spring:
   datasource:
-    druid:
-      name : dataSource
+    write:
+      name : writeDataSource
+      url : jdbc:mysql://120.78.93.10:3306/guns?characterEncoding=utf-8&failOverReadOnly=false&autoReconnect=true&roundRobinLoadBalance=true
+      username : root
+      password : 123
+      type : com.alibaba.druid.pool.DruidDataSource
+      driver-class-name : com.mysql.jdbc.Driver
+      filters :  stat
+      maxActive : 20
+      initialSize : 1
+      minIdle : 3
+      maxWait : 60000
+      timeBetweenEvictionRunsMillis : 60000
+      minEvictableIdleTimeMillis : 300000
+      validationQuery : select 'x' from dual
+      testWhileIdle : true
+      testOnBorrow : false
+      testOnReturn : false
+      poolPreparedStatements : true
+      maxOpenPreparedStatements : 50
+      connectionProperties: {druid.stat.mergeSql: true,druid.stat.slowSqlMillis: 5000}
+    read:
+      name : readDataSource
       url : jdbc:mysql://120.78.93.10:3306/guns?characterEncoding=utf-8&failOverReadOnly=false&autoReconnect=true&roundRobinLoadBalance=true
       username : root
       password : 123

@@ -1,6 +1,8 @@
 package com.xy.service.impl;
 
 import com.alibaba.dubbo.config.annotation.Service;
+import com.xy.configration.datasource.Master;
+import com.xy.configration.datasource.Slave;
 import com.xy.entity.SysUser;
 import com.xy.persistence.SysUserMapper;
 import com.xy.service.SysUserService;
@@ -22,6 +24,7 @@ public class SysUserServiceImpl implements SysUserService{
     private SysUserMapper sysUserMapper;
 
     @Override
+    @Slave
     @Transactional(rollbackFor = Exception.class, readOnly = true)
     public SysUser findUserById(Integer id) {
         SysUser sysUser = sysUserMapper.selectByPrimaryKey(id);
@@ -29,6 +32,7 @@ public class SysUserServiceImpl implements SysUserService{
     }
 
     @Override
+    @Master
     public void insertSysUser(SysUser sysUser) {
         sysUserMapper.insert(sysUser);
     }
