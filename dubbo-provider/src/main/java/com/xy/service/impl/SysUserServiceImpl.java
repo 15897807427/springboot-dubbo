@@ -1,8 +1,8 @@
 package com.xy.service.impl;
 
 import com.alibaba.dubbo.config.annotation.Service;
-import com.xy.configration.datasource.Master;
-import com.xy.configration.datasource.Slave;
+import com.xy.configration.annotation.Master;
+import com.xy.configration.annotation.Slave;
 import com.xy.entity.SysUser;
 import com.xy.persistence.SysUserMapper;
 import com.xy.service.SysUserService;

@@ -19,12 +19,12 @@ import org.springframework.stereotype.Component;
 @Order(-1)
 public class DataSourceAspect {
 
-    @Pointcut(value = "@annotation(Master)")
+    @Pointcut(value="@annotation(com.xy.configration.annotation.Master)")
     public void masterDataSource() {
 
     }
 
-    @Pointcut(value = "@annotation(Slave)")
+    @Pointcut(value = "@annotation(com.xy.configration.annotation.Slave)")
     public void slaveDataSource() {
 
     }
