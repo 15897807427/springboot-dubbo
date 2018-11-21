@@ -78,13 +78,11 @@
         <dependency>
             <groupId>com.github.pagehelper</groupId>
             <artifactId>pagehelper</artifactId>
-            <version>5.1.4</version>
         </dependency>
         <!-- 通用mapper依赖 -->
         <dependency>
             <groupId>tk.mybatis</groupId>
             <artifactId>mapper</artifactId>
-            <version>3.5.2</version>
         </dependency>
         <!-- configuration-processor依赖 -->
         <dependency>
@@ -198,7 +196,7 @@
                     <dependency>
                         <groupId>tk.mybatis</groupId>
                         <artifactId>mapper</artifactId>
-                        <version>3.5.2</version>
+                        <version>${mapper.version}</version>
                     </dependency>
                 </dependencies>
             </plugin>
