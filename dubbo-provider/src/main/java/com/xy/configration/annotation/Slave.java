@@ -8,6 +8,7 @@ import java.lang.annotation.*;
  * @create: 2018-11-20 22:33
  **/
 @Inherited
+@Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD})
 public @interface Slave {
