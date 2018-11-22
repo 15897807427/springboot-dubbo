@@ -14,7 +14,7 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
  * @create: 2018-11-18 01:02
  **/
 @SpringBootApplication
-@EnableAspectJAutoProxy
+@EnableAspectJAutoProxy(proxyTargetClass = true,exposeProxy = true)
 @EnableCircuitBreaker
 @EnableDubbo
 public class DubboProviderApplication {

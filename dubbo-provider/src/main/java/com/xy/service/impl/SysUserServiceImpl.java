@@ -24,8 +24,8 @@ public class SysUserServiceImpl implements SysUserService{
     private SysUserMapper sysUserMapper;
 
     @Override
-    @Slave
     @Transactional(rollbackFor = Exception.class, readOnly = true)
+    @Slave
     public SysUser findUserById(Integer id) {
         SysUser sysUser = sysUserMapper.selectByPrimaryKey(id);
         return sysUser;
