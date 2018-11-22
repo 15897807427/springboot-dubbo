@@ -33,7 +33,6 @@
         <module>dubbo-provider</module>
         <module>dubbo-api</module>
         <module>dubbo-consumer</module>
-        <module>dubbo-test</module>
     </modules>
 
     <dependencyManagement>
